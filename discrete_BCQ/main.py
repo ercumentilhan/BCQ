@@ -35,7 +35,7 @@ def interact_with_environment(env, replay_buffer, is_atari, num_actions, state_d
 		parameters["eval_eps"],
 	)
 
-	if args.generate_buffer: policy.load(f"./models/behavioral_{setting}")
+	if args.generate_buffer: policy.load(f"E:/BCQ/Models/behavioral_{setting}")
 	
 	evaluations = []
 
@@ -101,18 +101,18 @@ def interact_with_environment(env, replay_buffer, is_atari, num_actions, state_d
 		# Evaluate episode
 		if args.train_behavioral and (t + 1) % parameters["eval_freq"] == 0:
 			evaluations.append(eval_policy(policy, args.env, args.seed))
-			np.save(f"./results/behavioral_{setting}", evaluations)
-			policy.save(f"./models/behavioral_{setting}")
+			np.save(f"E:/BCQ/Models/Results/behavioral_{setting}", evaluations)
+			policy.save(f"E:/BCQ/Models/behavioral_{setting}")
 
 	# Save final policy
 	if args.train_behavioral:
-		policy.save(f"./models/behavioral_{setting}")
+		policy.save(f"E:/BCQ/Models/behavioral_{setting}")
 
 	# Save final buffer and performance
 	else:
 		evaluations.append(eval_policy(policy, args.env, args.seed))
-		np.save(f"./results/buffer_performance_{setting}", evaluations)
-		replay_buffer.save(f"./buffers/{buffer_name}")
+		np.save(f"E:/BCQ/Results/buffer_performance_{setting}", evaluations)
+		replay_buffer.save(f"E:/BCQ/Buffers/{buffer_name}")
 
 
 # Trains BCQ offline
@@ -141,7 +141,7 @@ def train_BCQ(env, replay_buffer, is_atari, num_actions, state_dim, device, args
 	)
 
 	# Load replay buffer	
-	replay_buffer.load(f"./buffers/{buffer_name}")
+	replay_buffer.load(f"E:/BCQ/Buffers/{buffer_name}")
 	
 	evaluations = []
 	episode_num = 0
@@ -154,7 +154,7 @@ def train_BCQ(env, replay_buffer, is_atari, num_actions, state_dim, device, args
 			policy.train(replay_buffer)
 
 		evaluations.append(eval_policy(policy, args.env, args.seed))
-		np.save(f"./results/BCQ_{setting}", evaluations)
+		np.save(f"E:/BCQ/Results/BCQ_{setting}", evaluations)
 
 		training_iters += int(parameters["eval_freq"])
 		print(f"Training iterations: {training_iters}")
@@ -267,14 +267,14 @@ if __name__ == "__main__":
 		print("Train_behavioral and generate_buffer cannot both be true.")
 		exit()
 
-	if not os.path.exists("./results"):
-		os.makedirs("./results")
+	if not os.path.exists("E:/BCQ/Results"):
+		os.makedirs("E:/BCQ/Results")
 
-	if not os.path.exists("./models"):
-		os.makedirs("./models")
+	if not os.path.exists("E:/BCQ/Models"):
+		os.makedirs("E:/BCQ/Models")
 
-	if not os.path.exists("./buffers"):
-		os.makedirs("./buffers")
+	if not os.path.exists("E:/BCQ/Buffers"):
+		os.makedirs("E:/BCQ/Buffers")
 
 	# Make env and determine properties
 	env, is_atari, state_dim, num_actions = utils.make_env(args.env, atari_preprocessing)
